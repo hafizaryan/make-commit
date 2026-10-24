@@ -1,6 +1,6 @@
 # make-commit 🚀
 
-> An AI agent skill that inspects Git diffs and repository history to generate clean, contextual, and convention-aware commit messages.
+> An AI agent skill that inspects Git diffs and repository history to generate clean, contextual, and convention-aware commit messages, while auto-guarding against leaked AI artifacts and secrets.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Skill: AI Agent](https://img.shields.io/badge/Skill-AI%20Agent-blue.svg)](SKILL.md)
@@ -11,12 +11,13 @@
 ## ✨ Features
 
 - 🔍 **Diff & History Inspection**: Analyzes both staged (`git diff --cached`) and unstaged changes while learning from recent repository commits.
+- 🤖 **AI Artifact Auto-Sanitization**: Scans workspace for AI assistant folders and files (`.gemini/`, `.claude/`, `.cursor/`, `.cline/`, `.aider*`, scratch/brain directories) and auto-appends them to the target project's `.gitignore` before drafting commits.
 - 📐 **Format Auto-Detection**:
   - **Conventional Commits** (`feat(auth): ...`, `fix: ...`)
   - **Issue / Ticket Prefixes** (`[PROJ-123] ...`, `#42: ...`)
   - **Gitmoji** (`✨ feat: ...`, `🐛 fix: ...`)
   - **Imperative Standard** (`Add ...`, `Fix ...`)
-- 🛡️ **Secret & Security Guardrails**: Detects and refuses to expose sensitive files, `.env` variables, API keys, or credentials in commit messages.
+- 🛡️ **Secret & Security Guardrails**: Detects and refuses to expose sensitive files, `.env` variables, API keys, credentials, or internal AI metadata in commit messages.
 - ✂️ **Atomic Commit Advice**: Identifies mixed concerns and recommends splitting changes into distinct, logical commits.
 - ⚡ **Copy-Ready Output**: Provides commit messages in plain text blocks with zero manual cleanup required.
 

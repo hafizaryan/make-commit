@@ -1,7 +1,7 @@
 ---
 name: make-commit
-description: Inspect current Git changes and recent commit history, then draft a clear commit message matching the repository's established format. Use when the user invokes make-commit or requests a commit message.
-version: 1.0.0
+description: Inspect current Git changes, auto-add detected AI artifacts to .gitignore, and draft a clean commit message matching repository conventions. Use when the user invokes make-commit or requests a commit message.
+version: 1.1.0
 tags:
   - git
   - devops
@@ -13,7 +13,7 @@ tags:
 
 ## Purpose
 
-Inspect current Git changes and repository commit history, analyze the intent of the diff, and draft a high-quality commit message tailored to the project's established conventions.
+Inspect current Git changes and repository commit history, ensure AI-generated artifacts are safely ignored in `.gitignore`, analyze the intent of the diff, and draft a high-quality commit message tailored to the project's established conventions.
 
 ---
 
@@ -39,17 +39,34 @@ git diff --stat
 
 ---
 
-### 2. Guardrails & Secret Prevention
+### 2. AI Artifact Detection & Auto-.gitignore Protection
+
+Before drafting commit messages, scan workspace for AI-generated artifacts:
+
+1. **Scan for AI files & folders** in the workspace:
+   - Tool & agent directories: `.gemini/`, `.claude/`, `.cursor/`, `.cline/`, `.roo/`, `.windsurf/`, `.copilot/`
+   - Cache, memory & logs: `brain/`, `scratch/`, `chat-transcripts/`, `.aider*`
+   - File patterns: `*.chat`, `*.transcript`, `*.prompt.md`
+2. **Auto-update project `.gitignore`**:
+   - If `.gitignore` does not exist in project root, create it.
+   - If detected AI artifacts are untracked and not covered by `.gitignore`, append them under an `# AI Assistant & Agent Artifacts` section.
+   - If AI artifacts were already staged (`git diff --cached`), warn the user and recommend unstaging (`git restore --staged <path>` or `git rm --cached -r <path>`).
+3. **Notify user**: Inform the user if `.gitignore` was created or updated with AI artifact patterns before presenting the commit message.
+
+---
+
+### 3. Guardrails & Secret Prevention
 
 Before drafting, scan the diff and file paths:
 
 - **Never reference or expose secrets**: Reject or warn on API keys, private tokens, passwords, `.env` entries, SSH keys, credentials, or certificates.
+- **Filter AI agent and assistant artifacts**: Never include internal AI thoughts, agent system prompts, or scratch artifacts in commit messages.
 - **Never inspect or add ignored files**: Respect `.gitignore`.
 - **Do not execute commits automatically**: Never run `git commit`, `git add`, `git push`, or alter Git history unless explicitly commanded by the user.
 
 ---
 
-### 3. Identify Repository Commit Format
+### 4. Identify Repository Commit Format
 
 Prioritize documented project guidelines (e.g., `CONTRIBUTING.md`, `AGENTS.md`, `.commitlintrc*`, or `commitlint.config.js`).
 
@@ -73,7 +90,7 @@ Match repository casing (lowercase vs capitalized subject), punctuation (no trai
 
 ---
 
-### 4. Analyze Intent and Draft Content
+### 5. Analyze Intent and Draft Content
 
 1. **Subject Line**:
    - Imperative mood ("Add", "Fix", "Refactor", not "Added", "Fixing").
@@ -93,7 +110,7 @@ Match repository casing (lowercase vs capitalized subject), punctuation (no trai
 
 ---
 
-### 5. Output Format
+### 6. Output Format
 
 Return the recommended message in a fenced `text` code block ready to copy:
 
